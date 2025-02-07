@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["es6"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "typeRoots": [
+      "./node_modules/@figma"
+    ],
+  },
+  "exclude": ["compositor", "./src/ui.ts"],
+}

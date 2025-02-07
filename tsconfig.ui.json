@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "lib": ["esnext", "dom"],
+    "types": ["@figma/plugin-typings"],
+    "outDir": "dist", 
+    "rootDir": "src",
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  },
+  "include": ["src/ui.ts"]
+}

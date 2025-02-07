@@ -1,0 +1,195 @@
+body {
+  background-color: var(--figma-color-bg);
+  padding: 0;
+  margin: 0;
+}
+
+#plugin-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+#top-layout {
+  width: 100%;
+  height: 255px;
+  border-bottom: 1px solid var(--figma-color-bg-tertiary);
+  display: flex;
+  flex-direction: row;
+}
+
+#code-preview {
+  width: 100%;
+  height: 296px;
+  border-bottom: 1px solid var(--figma-color-bg-tertiary);
+  display: flex;
+  flex-direction: row;
+}
+
+#bottom-bar {
+  width: 100%;
+  height: 40px;
+
+}
+
+#colors-preview {
+  height: 100%;
+  width: 50%;
+  overflow-y: scroll;
+}
+
+#layout-preview-with-binoculars {
+  height: 100%;
+  width: 50%;
+}
+
+#binoculars {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 25px;
+  align-items: center;
+  padding: 4px 0px;
+  border-bottom: 1px solid var(--figma-color-bg-tertiary);
+}
+
+.binoculars-btn {
+  font-size: 10px;
+  font-family: "Inter";
+  color: var(--figma-color-text);
+  cursor: pointer;
+}
+
+.binocular-selected {
+  font-weight: 800;
+}
+
+#code-container {
+  width: 100%;
+  height: 100%;
+}
+
+#actions-with-code {
+  width: 60px;
+  border-left: 1px solid var(--figma-color-bg-tertiary);
+  padding: 10px;
+  padding-bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+#copy-code {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: var(--figma-color-bg-brand);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#copy-code:hover {
+  background-color: var(--figma-color-bg-brand-hover);
+  cursor: pointer;
+}
+
+#copy-code-as-file {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+
+#copy-code-as-file:hover {
+  cursor: pointer;
+  background-color: var(--figma-color-bg-brand-tertiary);
+}
+
+#copy-as-file {
+  fill: var(--figma-color-text);
+}
+
+#bottom-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 20px;
+}
+
+#link-to-github-project {
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+  padding-left: 16px;
+  cursor: pointer;
+}
+
+#link-to-github-project-text {
+  color: var(--figma-color-text);
+  font-family: "Inter";
+  font-weight: 500;
+  font-size: 12px;
+}
+
+#link-to-github-project:hover #link-to-github-project-text {
+  text-decoration: underline;
+} 
+
+#plugin-version {
+  color: var(--figma-color-text);
+  font-family: "Inter";
+  font-weight: 500;
+  font-size: 12px;
+  padding-right: 16px;
+}
+
+#colors-pull {
+  width: 100%;
+}
+
+.color-with-block {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.color-block {
+  width: 14px;
+  height: 14px;
+  background-color: var(--figma-color-bg-secondary);
+}
+
+.color-hex-color {
+  color: var(--figma-color-text);
+  font-family: "Inter";
+  font-size: 14px;
+}
+
+.color-variable {
+  color: var(--figma-color-text);
+  font-family: "Inter";
+  font-size: 14px;
+}
+
+
+td {
+  border-collapse: collapse; 
+  border: 1px solid var(--figma-color-bg-tertiary);
+}
+
+.color-with-variable {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}

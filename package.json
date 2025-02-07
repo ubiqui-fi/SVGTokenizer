@@ -1,0 +1,48 @@
+{
+  "name": "svg_tokenizer_figma_plugin",
+  "version": "1.0.0",
+  "description": "SVG Tokenizer is a powerful Figma plugin that streamlines the process of exporting SVG assets while automatically converting colors into CSS variables. This ensures better maintainability, consistency, and easy theme customization in your web projects.",
+  "main": "./dist/code.js",
+  "ui": "./public/ui.html",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint --ext .ts,.tsx --ignore-pattern node_modules src",
+    "lint:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix src",
+    "watch": "npm run build -- --watch",
+    "cui": "tsc --project tsconfig.ui.json"
+  },
+  "author": "Max Makaluk",
+  "license": "",
+  "devDependencies": {
+    "@figma/eslint-plugin-figma-plugins": "*",
+    "@figma/plugin-typings": "*",
+    "@types/node": "^22.13.1",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "typescript": "^5.3.2",
+    "webpack-cli": "^6.0.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@figma/figma-plugins/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "root": true,
+    "rules": {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+          "caughtErrorsIgnorePattern": "^_"
+        }
+      ]
+    }
+  }
+}
