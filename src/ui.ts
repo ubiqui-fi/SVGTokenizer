@@ -1,209 +1,106 @@
 const GITHUB_PROJECT_URL = "https://github.com/FussuChalice/SVGTokenizer";
 
-document
-  .getElementById("link-to-github-project")
-  ?.addEventListener("click", () => {
-    window.open(GITHUB_PROJECT_URL, "_blank");
-  });
+document.getElementById("link-to-github-project")?.addEventListener("click", () => {
+  window.open(GITHUB_PROJECT_URL, "_blank");
+});
 
 let svgColorCodes = null;
 
 const renderColorsTable = (colors) => {
   svgColorCodes = colors;
   const colorsPull = document.getElementById("colors-pull");
+  colorsPull.innerHTML = "";
 
   const html = colors
-    .map(
-      (color) => `<tr>
-              <td class="color-with-block" data-color="${
-                color.color
-              }" data-variable="${color.variable}" data-id="${color.id}">
-                <div class="color-block" style="background-color: ${
-                  color.color
-                }"></div>
-                <div class="color-hex-color">${color.color}</div>
-              </td>
-              <td class="color-with-variable">
-                <div class="color-variable" ${
-                  color.variable === "-" && 'style="background-color: red;"'
-                } >${
-        color.variable === "-" ? "!VAR NOT FOUND!" : color.variable
-      }</div>
-              </td>
-            </tr>`
-    )
+    .map(({ color, variable, id }) => `
+      <tr>
+        <td class="color-with-block" data-color="${color}" data-variable="${variable}" data-id="${id}">
+          <div class="color-block" style="background-color: ${color}"></div>
+          <div class="color-hex-color">${color}</div>
+        </td>
+        <td class="color-with-variable">
+          <div class="color-variable" ${variable === "-" ? 'style="background-color: red;"' : ""}>
+            ${variable === "-" ? "!VAR NOT FOUND!" : variable}
+          </div>
+        </td>
+      </tr>
+    `)
     .join("");
 
-  colorsPull?.insertAdjacentHTML("beforeend", html);
+  colorsPull.insertAdjacentHTML("beforeend", html);
 
   document.querySelectorAll(".color-with-block").forEach((td) => {
-    td.addEventListener("click", (event) => {
-      const color = event.target.closest("td").dataset.color;
-      const variable = event.target.closest("td").dataset.variable;
-      const id = event.target.closest("td").dataset.id;
-
-      parent.postMessage(
-        {
-          pluginMessage: {
-            type: "selectLayer",
-            color,
-            variable,
-            id,
-          },
-        },
-        "*"
-      );
+    td.addEventListener("click", ({ target }) => {
+      const { color, variable, id } = target.closest("td").dataset;
+      parent.postMessage({ pluginMessage: { type: "selectLayer", color, variable, id } }, "*");
     });
   });
-};
-
-const toUpperCase = (text) => {
-  return text.toUpperCase();
 };
 
 const replaceColorsWithVariables = (colors, code) => {
-  let tmpCode = code;
-  colors.forEach(({ color, variable }) => {
-    if (variable) {
-      console.log(toUpperCase(color));
-      tmpCode = tmpCode.replace(toUpperCase(color), `var(--${variable})`);
-    }
-  });
-
-  return tmpCode;
+  return colors.reduce((updatedCode, { color, variable }) =>
+    variable ? updatedCode.replace(new RegExp(color, "gi"), `var(--${variable})`) : updatedCode, code);
 };
 
-const escapeHtml = (code) => {
-  return code
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-};
+const escapeHtml = (code) =>
+  code.replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
 
 const injectColorVariables = (colors) => {
-  let styles = ":root {\n";
-
-  colors.forEach(({ color, variable }) => {
-    if (variable) {
-      styles += `  --${variable}: ${color};\n`;
-    }
-  });
-
-  styles += "}";
-
+  if (!colors) return;
+  const styles = `:root {
+    ${colors.map(({ color, variable }) => variable ? `--${variable}: ${color};` : "").join("\n    ")}
+  }`;
   const styleTag = document.createElement("style");
   styleTag.textContent = styles;
-
   document.body.appendChild(styleTag);
 };
 
-const previewSVG = (svgCode: string) => {
-  const svgBox = document.getElementById("preview-svg");
-
+const previewSVG = (svgCode) => {
   injectColorVariables(svgColorCodes);
-  svgBox?.insertAdjacentHTML("beforeend", svgCode);
+  document.getElementById("preview-svg")?.insertAdjacentHTML("beforeend", svgCode);
 };
 
-const previewSVGCode = (svgCode: string) => {
+const previewSVGCode = (svgCode) => {
   const codeContainer = document.getElementById("code-container");
-  const codeWithReplacedColors = replaceColorsWithVariables(
-    svgColorCodes,
-    svgCode
-  );
-  const newCode = escapeHtml(codeWithReplacedColors);
-
-  const html = `
-      <pre class="prettyprint lang-html linenums " id="code">${newCode}</pre>
-    `;
-
-  codeContainer?.insertAdjacentHTML("beforeend", html);
-
+  const codeWithReplacedColors = replaceColorsWithVariables(svgColorCodes, svgCode);
+  codeContainer.innerHTML = `<pre class="prettyprint lang-html linenums" id="code">${escapeHtml(codeWithReplacedColors)}</pre>`;
   previewSVG(codeWithReplacedColors);
-
   PR.prettyPrint();
 };
 
-const saveSvgToFile = (svgCode: string) => {
-    const fileName = 'svg_file.svg';
-
-    const blob = new Blob([svgCode], { type: 'image/svg+xml' });
-
-    const link = document.createElement('a');
-
-    link.download = fileName;
-
-    link.href = URL.createObjectURL(blob);
-    link.click();
-
-    URL.revokeObjectURL(link.href);
-
-    parent.postMessage({
-        pluginMessage: {
-            type: 'alert',
-            data: 'SVG file saved successfully!'
-        }
-    }, '*');
+const saveSvgToFile = (svgCode) => {
+  const blob = new Blob([svgCode], { type: "image/svg+xml" });
+  const link = document.createElement("a");
+  link.download = "svg_file.svg";
+  link.href = URL.createObjectURL(blob);
+  link.click();
+  URL.revokeObjectURL(link.href);
+  parent.postMessage({ pluginMessage: { type: "alert", data: "SVG file saved successfully!" } }, "*");
 };
 
-
-const saveSVGAsFileHandler = (svgCode: string) => {
-    const saveAsFileButton = document.getElementById('copy-code-as-file');
-
-    saveAsFileButton?.addEventListener("click", () => {
-        saveSvgToFile(replaceColorsWithVariables(svgColorCodes, svgCode));
-    });
-}
-
-const copyToClipboardHandler = (svgCode: string) => {
-    const codeWithReplacedColors = replaceColorsWithVariables(svgColorCodes, svgCode);
-
-    const copyToClipboardButton = document.getElementById('copy-code');
-
-    if (copyToClipboardButton) {
-        copyToClipboardButton.addEventListener('click', () => {
-            try {
-                const textArea = document.createElement('textarea');
-                textArea.value = codeWithReplacedColors;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-
-                parent.postMessage({
-                    pluginMessage: {
-                        type: 'alert',
-                        data: 'SVG copied to clipboard!'
-                    }
-                }, '*');
-            } catch (error) {
-                console.error("Failed to copy to clipboard:", error);
-                parent.postMessage({
-                    pluginMessage: {
-                        type: 'alert',
-                        data: 'Failed to copy SVG to clipboard.'
-                    }
-                }, '*');
-            }
-        });
+const setupEventHandlers = (svgCode) => {
+  document.getElementById("copy-code-as-file")?.addEventListener("click", () => saveSvgToFile(replaceColorsWithVariables(svgColorCodes, svgCode)));
+  
+  document.getElementById("copy-code")?.addEventListener("click", () => {
+    try {
+      navigator.clipboard.writeText(replaceColorsWithVariables(svgColorCodes, svgCode));
+      parent.postMessage({ pluginMessage: { type: "alert", data: "SVG copied to clipboard!" } }, "*");
+    } catch (error) {
+      console.error("Failed to copy to clipboard:", error);
+      parent.postMessage({ pluginMessage: { type: "alert", data: "Failed to copy SVG to clipboard." } }, "*");
     }
+  });
 };
 
-const listenFigmaPluginBackendMessages = () => {
-  onmessage = (event) => {
-    const message = event.data.pluginMessage;
-
-    if (message.type === "colors") {
-      renderColorsTable(message.data);
-    }
-
-    if (message.type === "svg-code") {
-      previewSVGCode(message.data);
-      copyToClipboardHandler(message.data);
-      saveSVGAsFileHandler(message.data);
-    }
-  };
+onmessage = (event) => {
+  const { type, data } = event.data.pluginMessage;
+  if (type === "colors") renderColorsTable(data);
+  if (type === "svg-code") {
+    previewSVGCode(data);
+    setupEventHandlers(data);
+  }
 };
-
-listenFigmaPluginBackendMessages();

@@ -1,60 +1,39 @@
-export const rgbToHex = (r: number, g: number, b: number): string =>
-  `#${("0" + Math.round(r * 255).toString(16)).slice(-2)}` +
-  `${("0" + Math.round(g * 255).toString(16)).slice(-2)}` +
-  `${("0" + Math.round(b * 255).toString(16)).slice(-2)}`;
+export const rgbToHex = (r, g, b) =>
+  `#${[r, g, b]
+    .map((channel) => ("0" + Math.round(channel * 255).toString(16)).slice(-2))
+    .join("")}`;
 
-export const figmaElementsToColorTable = async (figmaElements) => {
+const extractColors = async (elements, type) => {
   const colorArray = [];
-
-  for (const elem of figmaElements) {
-    if ("fills" in elem) {
-      const allColors = elem.fills;
-
-      if (Array.isArray(allColors) && allColors.length > 0) {
-        for (const color of allColors) {
-          if (color.type === "SOLID" && color.color) {
-            const hex = rgbToHex(color.color.r, color.color.g, color.color.b);
-            let variable = "-";
-
-            if (color.boundVariables && color.boundVariables.color) {
-              const variableData = await figma.variables.getVariableByIdAsync(
-                color.boundVariables.color.id
-              );
-              variable = variableData?.name || " ";
-            }
-
-            colorArray.push({ color: hex, variable, id: elem.id });
-          }
-        }
+  
+  for (const elem of elements) {
+    if (!(type in elem)) continue;
+    
+    for (const item of elem[type]) {
+      if (item.type !== "SOLID" || !item.color) continue;
+      
+      const hex = rgbToHex(item.color.r, item.color.g, item.color.b);
+      let variable = "-";
+      
+      if (item.boundVariables?.color) {
+        const variableData = await figma.variables.getVariableByIdAsync(
+          item.boundVariables.color.id
+        );
+        variable = variableData?.name || " ";
       }
-    }
-
-    if ("strokes" in elem) {
-      const allStrokes = elem.strokes;
-
-      if (Array.isArray(allStrokes) && allStrokes.length > 0) {
-        for (const stroke of allStrokes) {
-          if (stroke.type === "SOLID" && stroke.color) {
-            const hex = rgbToHex(
-              stroke.color.r,
-              stroke.color.g,
-              stroke.color.b
-            );
-            let variable = "-";
-
-            if (stroke.boundVariables && stroke.boundVariables.color) {
-              const variableData = await figma.variables.getVariableByIdAsync(
-                stroke.boundVariables.color.id
-              );
-              variable = variableData?.name || " ";
-            }
-
-            colorArray.push({ color: hex, variable, id: elem.id });
-          }
-        }
-      }
+      
+      colorArray.push({ color: hex, variable, id: elem.id });
     }
   }
-
+  
   return colorArray;
+};
+
+export const figmaElementsToColorTable = async (figmaElements) => {
+  const [fillColors, strokeColors] = await Promise.all([
+    extractColors(figmaElements, "fills"),
+    extractColors(figmaElements, "strokes"),
+  ]);
+
+  return [...fillColors, ...strokeColors];
 };
