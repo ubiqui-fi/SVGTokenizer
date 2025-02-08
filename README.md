@@ -41,4 +41,30 @@ Install the plugin from the Figma Community and streamline your SVG workflow tod
 
 
 
+## Developerment
 
+### Setup env
+```bash
+# Install dependencies for the plugin directory
+npm install
+
+# Install dependencies for the compositor
+cd ./compositor
+npm install
+```
+
+### Developerment
+
+```bash
+# To assemble the UI (HTML, CSS, ui.js) into one file, use compositor
+cd ./compositor
+npm run composite
+
+# To convert ui.ts to ui.js, use the following command
+# Work in the project directory (not in compositor)
+npm run cui 
+
+# To assemble the Plugin (Backend) side, use the following commands:
+npm run watch
+npx webpack
+```
