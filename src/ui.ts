@@ -38,8 +38,12 @@ const renderColorsTable = (colors) => {
 };
 
 const replaceColorsWithVariables = (colors, code) => {
-  return colors.reduce((updatedCode, { color, variable }) =>
-    variable ? updatedCode.replace(new RegExp(color, "gi"), `var(--${variable})`) : updatedCode, code);
+  return colors.reduce((updatedCode, { color, variable }) => 
+      variable && variable !== "-" 
+          ? updatedCode.replace(new RegExp(color, "gi"), `var(--${variable})`) 
+          : updatedCode, 
+      code
+  );
 };
 
 const escapeHtml = (code) =>
