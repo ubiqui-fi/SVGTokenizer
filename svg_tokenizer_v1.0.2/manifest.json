@@ -1,0 +1,18 @@
+{
+  "name": "SVG Tokenizer – Export with CSS variables",
+  "id": "1469432927974614656",
+  "api": "1.0.0",
+  "main": "./bundle.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "./ui.html",
+  "networkAccess": {
+    "allowedDomains": [
+      "https://cdn.jsdelivr.net"
+    ]
+  }
+}
