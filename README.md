@@ -37,7 +37,7 @@ Special thanks to [**Vlad (@ux-git)**](https://github.com/ux-git) for the idea!
 
 ## 🔗 Get Started
 
-Install the plugin from the Figma Community and streamline your SVG workflow today!
+Install the plugin from the [Figma Community](https://www.figma.com/community/plugin/1469432927974614656/svg-tokenizer-export-with-css-variables) and streamline your SVG workflow today!
 
 
 
