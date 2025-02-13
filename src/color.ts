@@ -19,10 +19,10 @@ const extractColors = async (elements, type) => {
         const variableData = await figma.variables.getVariableByIdAsync(
           item.boundVariables.color.id
         );
-        variable = variableData?.name || " ";
+        variable = variableData?.name || "-";
       }
       
-      colorArray.push({ color: hex, variable, id: elem.id });
+      colorArray.push({ color: hex, variable, id: elem.id, type: type });
     }
   }
   

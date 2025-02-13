@@ -1,9 +1,5 @@
 const GITHUB_PROJECT_URL = "https://github.com/FussuChalice/SVGTokenizer";
 
-document.getElementById("link-to-github-project")?.addEventListener("click", () => {
-  window.open(GITHUB_PROJECT_URL, "_blank");
-});
-
 let svgColorCodes = null;
 
 const renderColorsTable = (colors) => {
@@ -32,18 +28,28 @@ const renderColorsTable = (colors) => {
   document.querySelectorAll(".color-with-block").forEach((td) => {
     td.addEventListener("click", ({ target }) => {
       const { color, variable, id } = target.closest("td").dataset;
-      parent.postMessage({ pluginMessage: { type: "selectLayer", color, variable, id } }, "*");
+      parent.postMessage({ pluginMessage: { type: "select-layer", color, variable, id } }, "*");
     });
   });
 };
 
 const replaceColorsWithVariables = (colors, code) => {
-  return colors.reduce((updatedCode, { color, variable }) => 
-      variable && variable !== "-" 
-          ? updatedCode.replace(new RegExp(color, "gi"), `var(--${variable})`) 
-          : updatedCode, 
-      code
-  );
+  const domParser = new DOMParser();
+
+  return colors.reduce((updateCode, { id, variable, type }) => {
+    const stringAsDOM = domParser.parseFromString(updateCode, "image/svg+xml");
+    const elementInDOM = stringAsDOM.getElementById(id);
+
+    if (type === "fills" && variable !== "-") {
+      elementInDOM?.setAttribute("fill", `var(--${variable})`);
+    }
+
+    if (type === "strokes" && variable !== "-") {
+      elementInDOM?.setAttribute("stroke", `var(--${variable})`);
+    }
+
+    return new XMLSerializer().serializeToString(stringAsDOM);
+  }, code);
 };
 
 const escapeHtml = (code) =>
@@ -83,10 +89,10 @@ const saveSvgToFile = (svgCode) => {
   link.href = URL.createObjectURL(blob);
   link.click();
   URL.revokeObjectURL(link.href);
-  parent.postMessage({ pluginMessage: { type: "alert", data: "SVG file saved successfully!" } }, "*");
 };
 
 const setupEventHandlers = (svgCode) => {
+  document.getElementById("link-to-github-project")?.addEventListener("click", () => window.open(GITHUB_PROJECT_URL, "_blank"));
   document.getElementById("copy-code-as-file")?.addEventListener("click", () => saveSvgToFile(replaceColorsWithVariables(svgColorCodes, svgCode)));
   
   document.getElementById("copy-code")?.addEventListener("click", () => {
@@ -102,7 +108,9 @@ const setupEventHandlers = (svgCode) => {
 
 onmessage = (event) => {
   const { type, data } = event.data.pluginMessage;
-  if (type === "colors") renderColorsTable(data);
+  if (type === "colors") {
+    renderColorsTable(data);
+  }
   if (type === "svg-code") {
     previewSVGCode(data);
     setupEventHandlers(data);
