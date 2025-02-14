@@ -1,7 +1,26 @@
-export const rgbToHex = (r, g, b) =>
+const rgbToHex = (r, g, b) =>
   `#${[r, g, b]
     .map((channel) => ("0" + Math.round(channel * 255).toString(16)).slice(-2))
     .join("")}`;
+
+
+export const removeNamesDuplications = (colors) => {
+  const nameCount = {};
+
+  const uniqueNames = colors.map((item) => {
+    let newName = item.name;
+
+    if (nameCount[newName] !== undefined) {
+      nameCount[newName]++;
+      newName = nameCount[newName] !== 1 ? `${newName}_${nameCount[newName]}` : newName;
+    } else {
+      nameCount[newName] = 1;
+    }
+    return {...item, name: newName};
+  });
+
+  return uniqueNames;
+};
 
 const extractColors = async (elements, type) => {
   const colorArray = [];
@@ -22,11 +41,17 @@ const extractColors = async (elements, type) => {
         variable = variableData?.name || "-";
       }
       
-      colorArray.push({ color: hex, variable, id: elem.id, type: type });
+      colorArray.push({ 
+        color: hex, 
+        variable, 
+        id: elem.id, 
+        name: elem.name, 
+        type: type 
+      });
     }
   }
-  
-  return colorArray;
+
+  return removeNamesDuplications(colorArray);
 };
 
 export const figmaElementsToColorTable = async (figmaElements) => {
