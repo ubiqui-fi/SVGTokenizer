@@ -18,7 +18,7 @@ export const removeNamesDuplications = (colors) => {
     }
     return {...item, name: newName};
   });
-
+  
   return uniqueNames;
 };
 

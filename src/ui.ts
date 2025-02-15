@@ -33,25 +33,64 @@ const renderColorsTable = (colors) => {
   });
 };
 
+const replaceColorsWithVariablesEngine = (props: {elementInDOM: HTMLElement | null, attribute: {name: string, data: string}}) => {
+  const localElement = props.elementInDOM;
+  
+  const applyAttribute = (element: HTMLElement | null) => {
+    if (element?.getAttribute(props.attribute.name)) {
+      element.setAttribute(props.attribute.name, props.attribute.data);
+    }
+  };
+
+  if (localElement?.tagName != "g") {
+    applyAttribute(props.elementInDOM);
+  } else {
+    const children = Array.from(localElement!.getElementsByTagName("*"));
+
+    children.forEach(el => {
+      if (!(el.id)) {
+        applyAttribute(el);
+      }
+    });
+  }
+  
+  return localElement;
+}
+
 const replaceColorsWithVariables = (colors, code) => {
   const domParser = new DOMParser();
 
-  return colors.reduce((updateCode, { id, variable, type }) => {
+  const newCode = colors.reduce((updateCode, { id, variable, type }) => {
     const stringAsDOM = domParser.parseFromString(updateCode, "image/svg+xml");
-    const elementInDOM = stringAsDOM.getElementById(id);
+    const baseElement = stringAsDOM.getElementById(id);
 
-    if (type === "fills" && variable !== "-") {
-      elementInDOM?.setAttribute("fill", `var(--${variable})`);
-    }
+    if (baseElement) {
+      if (type === "fills" && variable !== "-") {
+        replaceColorsWithVariablesEngine({
+          elementInDOM: baseElement,
+          attribute: {
+            name: 'fill',
+            data: `var(--${variable})`
+          }
+        });
+      }
 
-    if (type === "strokes" && variable !== "-") {
-      elementInDOM?.setAttribute("stroke", `var(--${variable})`);
+      if (type === "strokes" && variable !== "-") {
+        replaceColorsWithVariablesEngine({
+          elementInDOM: baseElement,
+          attribute: {
+            name: 'stroke',
+            data: `var(--${variable})`
+          }
+        });
+      }
     }
 
     return new XMLSerializer().serializeToString(stringAsDOM);
   }, code);
-};
 
+  return newCode;
+};
 const escapeHtml = (code) =>
   code.replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
