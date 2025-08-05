@@ -7,11 +7,11 @@ const VERSION = 'v1.0.5';
 const selectedElement = figma.currentPage.selection[0];
 
 
-const findChildrenElements = (rootElem) => {
+const findChildrenElements = (rootElem: any) => {
   const result = [rootElem];
 
   if ("children" in rootElem) {
-    rootElem.children.forEach((child) => {
+    rootElem.children.forEach((child: any) => {
       result.push(...findChildrenElements(child));
     });
   }
@@ -27,7 +27,7 @@ const addCommentsForSVGCode = (svgCode: string) => {
          svgCode;
 };
 
-const sendColorsToUI = async (elements) => {
+const sendColorsToUI = async (elements: any) => {
   try {
     const colors = await figmaElementsToColorTable(elements);
     figma.ui.postMessage({ type: "colors", data: colors });
@@ -36,7 +36,7 @@ const sendColorsToUI = async (elements) => {
   }
 };
 
-const sendSVGCodeToUI = async (elementForExport, elements) => {
+const sendSVGCodeToUI = async (elementForExport: any, elements: any) => {
   const elementsWithUniqueNames = removeNamesDuplications(elements);
 
   try {
@@ -48,7 +48,7 @@ const sendSVGCodeToUI = async (elementForExport, elements) => {
 
       let svgCode = String.fromCharCode(...svgBuffer);
 
-      elementsWithUniqueNames.forEach((el) => {
+      elementsWithUniqueNames.forEach((el: any) => {
         if (el.name && el.id) {
           svgCode = svgCode.replace(`id="${el.name}"`, `id="${el.id}"`);
         }
@@ -64,7 +64,7 @@ const sendSVGCodeToUI = async (elementForExport, elements) => {
   }
 };
 
-const processSelectedElement = async (element) => {
+const processSelectedElement = async (element: any) => {
   if (!element) {
     figma.notify("The element is not selected.");
     figma.closePlugin();
@@ -82,7 +82,7 @@ processSelectedElement(selectedElement);
 figma.ui.onmessage = async (message) => {
   try {
     if (message.type === "select-layer") {
-      const node = await figma.getNodeByIdAsync(message.id);
+      const node = await figma.getNodeByIdAsync(message.id) as SceneNode;
 
       if (node) {
         figma.currentPage.selection = [node];

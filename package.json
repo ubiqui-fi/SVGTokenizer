@@ -1,6 +1,6 @@
 {
-  "name": "svg_tokenizer_figma_plugin",
-  "version": "1.0.3",
+  "name": "svg_style_tokenizer_figma_plugin",
+  "version": "1.1",
   "description": "SVG Tokenizer is a powerful Figma plugin that streamlines the process of exporting SVG assets while automatically converting colors into CSS variables. This ensures better maintainability, consistency, and easy theme customization in your web projects.",
   "main": "./dist/code.js",
   "ui": "./public/ui.html",
@@ -9,9 +9,10 @@
     "lint": "eslint --ext .ts,.tsx --ignore-pattern node_modules src",
     "lint:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix src",
     "watch": "npm run build -- --watch",
-    "cui": "tsc --project tsconfig.ui.json"
+    "cui": "tsc --project tsconfig.ui.json",
+    "compile": "npm run build && npm run cui && cd compositor && npm run composite && cd .. && npx webpack"
   },
-  "author": "Max Makaluk",
+  "authors": ["Max Makaluk", "Jonah Kowal"],
   "license": "",
   "devDependencies": {
     "@figma/eslint-plugin-figma-plugins": "*",

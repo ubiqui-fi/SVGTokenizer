@@ -1,12 +1,12 @@
-# SVG Tokenizer - Export with CSS variables
+# SVG Style Tokenizer - Export with CSS variables
 
-**SVG Tokenizer** is a Figma plugin that allows you to export SVGs with CSS variables for colors, making them more flexible and easier to manage in your projects.
+**SVG Style Tokenizer** is a Figma plugin that allows you to export SVGs with CSS variables for colors, making them more flexible and easier to manage in your projects.
 
 ![cover](cover.png)
 
 ## 🚀 Features
 
-- Export SVGs with colors replaced by CSS variables
+- Export SVGs with style colors replaced by CSS variables
 - Automatically generate a CSS file with variable definitions
 - Customize variable names for better organization
 - Optimized SVG output for web usage
@@ -37,7 +37,7 @@ Special thanks to [**Vlad (@ux-git)**](https://github.com/ux-git) for the idea!
 
 ## 🔗 Get Started
 
-Install the plugin from the [Figma Community](https://www.figma.com/community/plugin/1469432927974614656/svg-tokenizer-export-with-css-variables) and streamline your SVG workflow today!
+Install the plugin from the [Figma Community]() and streamline your SVG workflow today!
 
 
 
@@ -56,15 +56,5 @@ npm install
 ### Developerment
 
 ```bash
-# To assemble the UI (HTML, CSS, ui.js) into one file, use compositor
-cd ./compositor
-npm run composite
-
-# To convert ui.ts to ui.js, use the following command
-# Work in the project directory (not in compositor)
-npm run cui 
-
-# To assemble the Plugin (Backend) side, use the following commands:
-npm run watch
-npx webpack
+npm run compile
 ```

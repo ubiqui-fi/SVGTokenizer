@@ -1,11 +1,11 @@
-const GITHUB_PROJECT_URL = "https://github.com/FussuChalice/SVGTokenizer";
+const GITHUB_PROJECT_URL = "https://github.com/ubiqui-fi/SVGTokenizer";
 
 let svgColorCodes = null;
 
 const renderColorsTable = (colors) => {
   svgColorCodes = colors;
   const colorsPull = document.getElementById("colors-pull");
-  colorsPull.innerHTML = "";
+  colorsPull!!.innerHTML = "";
 
   const html = colors
     .map(({ color, variable, id }) => `
@@ -23,12 +23,15 @@ const renderColorsTable = (colors) => {
     `)
     .join("");
 
-  colorsPull.insertAdjacentHTML("beforeend", html);
+  colorsPull!!.insertAdjacentHTML("beforeend", html);
 
   document.querySelectorAll(".color-with-block").forEach((td) => {
     td.addEventListener("click", ({ target }) => {
-      const { color, variable, id } = target.closest("td").dataset;
-      parent.postMessage({ pluginMessage: { type: "select-layer", color, variable, id } }, "*");
+      const tdElement = (target as Element).closest("td");
+      if (tdElement) {
+        const { color, variable, id } = tdElement.dataset;
+        parent.postMessage({ pluginMessage: { type: "select-layer", color, variable, id } }, "*");
+      }
     });
   });
 };
@@ -45,7 +48,7 @@ const replaceColorsWithVariablesEngine = (props: {elementInDOM: HTMLElement | nu
   if (localElement?.tagName != "g") {
     applyAttribute(props.elementInDOM);
   } else {
-    const children = Array.from(localElement!.getElementsByTagName("*"));
+    const children = Array.from(localElement!.getElementsByTagName("*")) as HTMLElement[];
 
     children.forEach(el => {
       if (!(el.id)) {
@@ -113,10 +116,13 @@ const previewSVG = (svgCode) => {
   document.getElementById("preview-svg")?.insertAdjacentHTML("beforeend", svgCode);
 };
 
+// Declare PR as a global variable to satisfy TypeScript
+declare const PR: { prettyPrint: () => void };
+
 const previewSVGCode = (svgCode) => {
   const codeContainer = document.getElementById("code-container");
   const codeWithReplacedColors = replaceColorsWithVariables(svgColorCodes, svgCode);
-  codeContainer.innerHTML = `<pre class="prettyprint lang-html linenums" id="code">${escapeHtml(codeWithReplacedColors)}</pre>`;
+  codeContainer!!.innerHTML = `<pre class="prettyprint lang-html linenums" id="code">${escapeHtml(codeWithReplacedColors)}</pre>`;
   previewSVG(codeWithReplacedColors);
   PR.prettyPrint();
 };

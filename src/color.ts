@@ -1,13 +1,21 @@
-const rgbToHex = (r, g, b) =>
+const rgbToHex = (r: number, g: number, b: number) =>
   `#${[r, g, b]
     .map((channel) => ("0" + Math.round(channel * 255).toString(16)).slice(-2))
     .join("")}`;
 
+type Color = {
+  color: string;
+  variable: string;
+  id: string;
+  name: string;
+  type: string;
+};
 
-export const removeNamesDuplications = (colors) => {
-  const nameCount = {};
 
-  const uniqueNames = colors.map((item) => {
+export const removeNamesDuplications = (colors: Color[]) => {
+  const nameCount: { [key: string]: number } = {};
+
+  const uniqueNames = colors.map((item: Color) => {
     let newName = item.name;
 
     if (nameCount[newName] !== undefined) {
@@ -22,24 +30,19 @@ export const removeNamesDuplications = (colors) => {
   return uniqueNames;
 };
 
-const extractColors = async (elements, type) => {
-  const colorArray = [];
+const extractColors = async (elements: any[], type: "fills" | "strokes") => {
+  const colorArray: Color[] = [];
   
   for (const elem of elements) {
     if (!(type in elem)) continue;
-    
-    for (const item of elem[type]) {
+    if (!elem.fillStyleId && !elem.strokeStyleId) continue;
+    let style = await (figma.getStyleByIdAsync(elem.fillStyleId) || figma.getStyleByIdAsync(elem.strokeStyleId)) as PaintStyle;
+    if (!style) continue;
+    for (const item of style.paints) {
       if (item.type !== "SOLID" || !item.color) continue;
-      
+
       const hex = rgbToHex(item.color.r, item.color.g, item.color.b);
-      let variable = "-";
-      
-      if (item.boundVariables?.color) {
-        const variableData = await figma.variables.getVariableByIdAsync(
-          item.boundVariables.color.id
-        );
-        variable = variableData?.name || "-";
-      }
+      let variable = style.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-color";
       
       colorArray.push({ 
         color: hex, 
@@ -54,7 +57,7 @@ const extractColors = async (elements, type) => {
   return removeNamesDuplications(colorArray);
 };
 
-export const figmaElementsToColorTable = async (figmaElements) => {
+export const figmaElementsToColorTable = async (figmaElements: any[]) => {
   const [fillColors, strokeColors] = await Promise.all([
     extractColors(figmaElements, "fills"),
     extractColors(figmaElements, "strokes"),
