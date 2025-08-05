@@ -1,7 +1,7 @@
 {
   "name": "svg_style_tokenizer_figma_plugin",
   "version": "1.1",
-  "description": "SVG Tokenizer is a powerful Figma plugin that streamlines the process of exporting SVG assets while automatically converting colors into CSS variables. This ensures better maintainability, consistency, and easy theme customization in your web projects.",
+  "description": "SVG Style Tokenizer is a powerful Figma plugin that streamlines the process of exporting SVG assets while automatically converting colors into CSS variables. This ensures better maintainability, consistency, and easy theme customization in your web projects.",
   "main": "./dist/code.js",
   "ui": "./public/ui.html",
   "scripts": {
