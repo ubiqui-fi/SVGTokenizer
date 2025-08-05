@@ -66,6 +66,8 @@ const replaceColorsWithVariables = (colors, code) => {
   let header = domParser.parseFromString(code, "image/svg+xml").querySelector("svg");
   if (header) {
     header.setAttribute("id", "svg");
+    header.removeAttribute("width");
+    header.removeAttribute("height");
     code = new XMLSerializer().serializeToString(header);
   }
 
