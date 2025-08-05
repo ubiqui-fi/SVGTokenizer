@@ -2,7 +2,7 @@ import { figmaElementsToColorTable, removeNamesDuplications } from "./color";
 
 figma.showUI(__html__, { width: 720, height: 590, themeColors: true });
 
-const VERSION = 'v1.0.5';
+const VERSION = 'v1.1';
 
 const selectedElement = figma.currentPage.selection[0];
 

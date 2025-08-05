@@ -1,6 +1,6 @@
 {
-  "name": "SVG Tokenizer – Export with CSS variables",
-  "id": "1469432927974614656",
+  "name": "SVG Style Tokenizer – Export with CSS variables",
+  "id": "",
   "api": "1.0.0",
   "main": "./dist/bundle.js",
   "capabilities": [],
