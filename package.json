@@ -12,7 +12,10 @@
     "cui": "tsc --project tsconfig.ui.json",
     "compile": "npm run build && npm run cui && cd compositor && npm run composite && cd .. && npx webpack"
   },
-  "authors": ["Max Makaluk", "Jonah Kowal"],
+  "authors": [
+    "Max Makaluk",
+    "Jonah Kowal"
+  ],
   "license": "",
   "devDependencies": {
     "@figma/eslint-plugin-figma-plugins": "*",
@@ -45,5 +48,8 @@
         }
       ]
     }
+  },
+  "dependencies": {
+    "svgo": "^4.0.0"
   }
 }

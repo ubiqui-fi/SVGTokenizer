@@ -54,9 +54,9 @@ const sendSVGCodeToUI = async (elementForExport: any, elements: any) => {
         }
       });
 
-      figma.ui.postMessage({ 
-        type: "svg-code", 
-        data: addCommentsForSVGCode(svgCode) 
+      figma.ui.postMessage({
+        type: "svg-code",
+        data: addCommentsForSVGCode(svgCode)
       });
     }
   } catch (error) {

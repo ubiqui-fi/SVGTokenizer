@@ -63,6 +63,12 @@ const replaceColorsWithVariablesEngine = (props: {elementInDOM: HTMLElement | nu
 const replaceColorsWithVariables = (colors, code) => {
   const domParser = new DOMParser();
 
+  let header = domParser.parseFromString(code, "image/svg+xml").querySelector("svg");
+  if (header) {
+    header.setAttribute("id", "svg");
+    code = new XMLSerializer().serializeToString(header);
+  }
+
   const newCode = colors.reduce((updateCode, { id, variable, type }) => {
     const stringAsDOM = domParser.parseFromString(updateCode, "image/svg+xml");
     const baseElement = stringAsDOM.getElementById(id);
